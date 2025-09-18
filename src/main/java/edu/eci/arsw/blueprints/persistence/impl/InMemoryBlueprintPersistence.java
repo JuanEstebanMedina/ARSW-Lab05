@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class InMemoryBlueprintPersistence implements BlueprintsPersistence {
 
-    private final Map<Tuple<String, String>, Blueprint> blueprints = new HashMap<>();
+    private final Map<Tuple<String, String>, Blueprint> blueprints = new ConcurrentHashMap<>();
 
     public InMemoryBlueprintPersistence() {
         // load stub data
@@ -43,10 +44,10 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence {
 
     @Override
     public void saveBlueprint(Blueprint bp) throws BlueprintPersistenceException {
-        if (blueprints.containsKey(new Tuple<>(bp.getAuthor(), bp.getName()))) {
+        Tuple<String, String> key = new Tuple<>(bp.getAuthor(), bp.getName());
+        Blueprint existing = blueprints.putIfAbsent(key, bp);
+        if (existing != null) {
             throw new BlueprintPersistenceException("The given blueprint already exists: " + bp);
-        } else {
-            blueprints.put(new Tuple<>(bp.getAuthor(), bp.getName()), bp);
         }
     }
 
@@ -65,7 +66,7 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence {
     }
 
     @Override
-    public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException {
+    public synchronized Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException {
         Set<Blueprint> res = new HashSet<>();
         for (Map.Entry<Tuple<String, String>, Blueprint> e : blueprints.entrySet()) {
             if (author.equals(e.getKey().getElem1())) {
@@ -79,7 +80,7 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence {
     }
 
     @Override
-    public void updateBlueprint(String author, String bprintname, Blueprint updatedBlueprint) throws BlueprintNotFoundException, BlueprintPersistenceException {
+    public synchronized void updateBlueprint(String author, String bprintname, Blueprint updatedBlueprint) throws BlueprintNotFoundException, BlueprintPersistenceException {
         Tuple<String, String> key = new Tuple<>(author, bprintname);
 
         if (!blueprints.containsKey(key)) {
