@@ -1,129 +1,129 @@
 # ARSW-Lab05
-## API REST para la gestión de planos
+## REST API for Blueprint Management
 
-**Escuela Colombiana de Ingeniería Julio Garavito**  
-**Arquitecturas de Software - ARSW**  
-**Laboratorio Número 5**
+**Colombian School of Engineering Julio Garavito**  
+**Software Architectures - ARSW**  
+**Laboratory Number 5**
 
-**Integrantes:**
+**Members:**
 - Juan Esteban Medina Rivas
 - María Paula Sánchez Macías
 
 ---
 
-## Contexto del Problema
+## Problem Context
 
-En este ejercicio construimos el componente BlueprintsRESTAPI, el cual permite gestionar los planos arquitectónicos de una prestigiosa compañía de diseño. La idea de este API es ofrecer un medio estandarizado e 'independiente de la plataforma' para que las herramientas que se desarrollen a futuro para la compañía puedan gestionar los planos de forma centralizada.
+In this exercise we built the BlueprintsRESTAPI component, which allows managing architectural blueprints for a prestigious design company. The idea of this API is to offer a standardized and 'platform-independent' medium so that tools developed in the future for the company can manage blueprints in a centralized way.
 
-## Parte I
+## Part I
 
-1. **Integración de componentes base**
+1. **Base component integration**
 
-> Integramos al proyecto base suministrado los Beans desarrollados en el ejercicio anterior. Copiamos sólo las clases, NO los archivos de configuración. Rectificamos que se tenga correctamente configurado el esquema de inyección de dependencias con las anotaciones @Service y @Autowired.
+> We integrated the Beans developed in the previous exercise into the provided base project. We copied only the classes, NOT the configuration files. We verified that the dependency injection scheme is correctly configured with @Service and @Autowired annotations.
 
-La estructura final del proyecto quedó de la siguiente manera con todas las clases necesarias:
+The final project structure was as follows with all necessary classes:
 
 <img src="img/partI-1.png" width="500">
 
-2. **Modificación del bean de persistencia**
+2. **Persistence bean modification**
 
-> Modificamos el bean de persistencia 'InMemoryBlueprintPersistence' para que por defecto se inicialice con al menos otros tres planos, y con dos asociados a un mismo autor.
+> We modified the 'InMemoryBlueprintPersistence' persistence bean so that by default it initializes with at least three other blueprints, and with two associated with the same author.
 
-El constructor de InMemoryBlueprintPersistence quedó de esta manera, donde se puede evidenciar que el autor con dos planos es "mapu":
+The InMemoryBlueprintPersistence constructor was configured this way, where it can be seen that the author with two blueprints is "mapu":
 
 <img src="img/partI - 2.png" width="600">
 
-Los datos de prueba incluyen:
-- **mapu**: "sala", "comedor" (2 planos del mismo autor)
-- **juan**: "baño" (1 plano adicional)
-- **_authorname_**: "_bpname_" (plano original)
+The test data includes:
+- **mapu**: "sala", "comedor" (2 blueprints from the same author)
+- **juan**: "baño" (1 additional blueprint)
+- **_authorname_**: "_bpname_" (original blueprint)
 
-3. **Configuración del recurso /blueprints GET**
+3. **Configuration of /blueprints GET resource**
 
-> Configuramos nuestra aplicación para que ofrezca el recurso "/blueprints", de manera que cuando se le haga una petición GET, retorne -en formato JSON- el conjunto de todos los planos.
+> We configured our application to offer the "/blueprints" resource, so that when a GET request is made, it returns -in JSON format- the set of all blueprints.
 
-Modificamos la clase BlueprintAPIController implementando el patrón mostrado:
+We modified the BlueprintAPIController class implementing the shown pattern:
 
 <img src="img/partI-3.1.png" width="600">
 
-Inyectamos el bean BlueprintsServices usando @Autowired:
+We injected the BlueprintsServices bean using @Autowired:
 
 <img src="img/partI-3.2.png" width="600">
 
-4. **Verificación del funcionamiento**
+4. **Functionality verification**
 
-> Verificamos el funcionamiento de la aplicación lanzando la aplicación con maven y enviando una petición GET a http://localhost:8080/blueprints.
+> We verified the application's functionality by launching the application with maven and sending a GET request to http://localhost:8080/blueprints.
 
-Compilación exitosa:
+Successful compilation:
 
 <img src="img/partI-4.0.png" width="600">
 
-Ejecución de la aplicación:
+Application execution:
 
 <img src="img/partI-4.1.png" width="600">
 
-Respuesta del endpoint mostrando los planos con filtrado aplicado:
+Endpoint response showing blueprints with applied filtering:
 
 <img src="img/partI-4.2.png" width="300"> 
 <img src="img/partI-4.3.png" width="300">
 
-5. **Endpoint para planos por autor**
+5. **Endpoint for blueprints by author**
 
-> Modificamos el controlador para que acepte peticiones GET al recurso /blueprints/{author}, el cual retorna usando una representación JSON todos los planos realizados por el autor cuyo nombre sea {author}.
+> We modified the controller to accept GET requests to the /blueprints/{author} resource, which returns using a JSON representation all blueprints made by the author whose name is {author}.
 
-Implementación del endpoint con @PathVariable:
+Implementation of the endpoint with @PathVariable:
 
 <img src="img/partI-5.1.png" width="600">
 
-Verificación con petición a /blueprints/mapu (autor con 2 planos):
+Verification with request to /blueprints/mapu (author with 2 blueprints):
 
 <img src="img/partI-5.2.png" width="400">
 
-6. **Endpoint para plano específico**
+6. **Endpoint for specific blueprint**
 
-> Modificamos el controlador para que acepte peticiones GET al recurso /blueprints/{author}/{bpname}, el cual retorna usando una representación JSON sólo UN plano específico.
+> We modified the controller to accept GET requests to the /blueprints/{author}/{bpname} resource, which returns using a JSON representation only ONE specific blueprint.
 
 <img src="img/partI-6.1.png" width="600">
 
-Verificación del plano específico /blueprints/mapu/sala:
+Verification of specific blueprint /blueprints/mapu/sala:
 
 <img src="img/partI-6.2.png" width="400">
 
-## Parte II
+## Part II
 
-7. **Manejo de peticiones POST**
+7. **POST request handling**
 
-> Agregamos el manejo de peticiones POST (creación de nuevos planos), de manera que un cliente http pueda registrar un nuevo plano haciendo una petición POST al recurso 'blueprints', enviando como contenido de la petición todo el detalle del recurso a través de un documento JSON.
+> We added POST request handling (creation of new blueprints), so that an http client can register a new blueprint by making a POST request to the 'blueprints' resource, sending as request content all the resource details through a JSON document.
 
-Implementación del endpoint POST siguiendo el patrón indicado:
+Implementation of the POST endpoint following the indicated pattern:
 
 <img src="img/partII-1.1.png" width="600">
 
-resultados
+Results:
 
 <img src="img/partII-1.2.png" width="300">
 
-Cuando queda mal creado el plano se ve de la siguiente forma
+When the blueprint creation fails, it looks as follows:
 
 <img src="img/post403.png" width="600">
 
-8. **Pruebas con curl**
+8. **Tests with curl**
 
-> Probamos que el recurso 'planos' acepta e interpreta correctamente las peticiones POST usando el comando curl. Registramos un nuevo plano y verificamos que se pueda obtener mediante una petición GET.
+> We tested that the 'blueprints' resource accepts and correctly interprets POST requests using the curl command. We registered a new blueprint and verified that it can be obtained through a GET request.
 
-Prueba de creación con curl:
+Creation test with curl:
 
 <img src="img/partII-2.1.png" width="600">
 
-Verificación del plano creado:
+Verification of created blueprint:
 
 <img src="img/partII-3.png" width="600">
 
-9. **Soporte para verbo PUT**
+9. **PUT verb support**
 
-> Agregamos soporte al verbo PUT para los recursos de la forma '/blueprints/{author}/{bpname}', de manera que sea posible actualizar un plano determinado.
+> We added support for the PUT verb for resources of the form '/blueprints/{author}/{bpname}', so that it is possible to update a specific blueprint.
 
-Para esto modificamos las clases de:
+For this we modified the following classes:
 
 - InMemoryBlueprintPersistence
 
@@ -141,79 +141,103 @@ Para esto modificamos las clases de:
 
 <img src="img/partII-4.4BC.png" width="800">
 
-Los resultados se muestran exitosos:
+The results show success:
 
 <img src="img/partII-4.5.png" width="300">
 <img src="img/partII-4.6.png" width="300">
 
 <img src="img/partII-4.7Bash.png" width="500">
 
-## Parte III - Análisis de Concurrencia
+## Part III - Concurrency Analysis
 
-10. **Identificación de problemas de concurrencia**
+### 10. Identification of concurrency problems
 
-> Identificamos que el componente BlueprintsRESTAPI funcionará en un entorno concurrente, atendiendo múltiples peticiones simultáneamente a través de múltiples hilos. Analizamos las condiciones de carrera y regiones críticas.
+> We identified race conditions and critical regions in the API's concurrent environment.
 
-**Condiciones de carrera identificadas:**
-- HashMap no es thread-safe para acceso concurrente
-- Operación check-then-act en saveBlueprint() no es atómica
-- Iteraciones vulnerables a ConcurrentModificationException
-- Operaciones check-then-update no atómicas
+**Identified problems:**
+- HashMap not thread-safe
+- Check-then-act operation not atomic in `saveBlueprint()`
+- ConcurrentModificationException in iterations
 
-**Componentes analizados:**
+### Solution implementation
 
-- InMemoryBlueprintPersistence
-- BlueprintsServices
-- BlueprintAPIController:
+> We implemented a hybrid strategy without significantly degrading performance.
 
-11. **Implementación de la solución**
+**1. ConcurrentHashMap:**
+```java
+private final Map<Tuple<String, String>, Blueprint> blueprints = new ConcurrentHashMap<>();
+```
 
-> Ajustamos el código para suprimir las condiciones de carrera, teniendo en cuenta que simplemente sincronizar el acceso a las operaciones de persistencia/consulta degradaría significativamente el desempeño del API, por lo cual buscamos estrategias alternativas.
+**2. Atomic operation:**
+```java
+@Override
+public void saveBlueprint(Blueprint bp) throws BlueprintPersistenceException {
+    Tuple<String, String> key = new Tuple<>(bp.getAuthor(), bp.getName());
+    Blueprint existing = blueprints.putIfAbsent(key, bp);
+    if (existing != null) {
+        throw new BlueprintPersistenceException("The given blueprint already exists: " + bp);
+    }
+}
+```
 
-**Estrategia implementada:**
+**3. Selective synchronization:**
+```java
+@Override
+public synchronized Set<Blueprint> getBlueprintsByAuthor(String author) 
+        throws BlueprintNotFoundException {
+}
 
-1. **ConcurrentHashMap**: Reemplazamos HashMap por ConcurrentHashMap
-2. **Operaciones atómicas**: Usamos putIfAbsent() para eliminación de condiciones de carrera
-3. **Sincronización selectiva**: synchronized solo donde es absolutamente necesario
+@Override
+public synchronized void updateBlueprint(String author, String bprintname, 
+        Blueprint updatedBlueprint) throws BlueprintNotFoundException {
+}
+```
 
-12. **Pruebas finales de concurrencia**
+**4. Methods without synchronization:**
+```java
+@Override
+public Set<Blueprint> getAllBlueprints() {
+    return new HashSet<>(blueprints.values());
+}
 
-## Análisis de la Solución de Concurrencia
+@Override
+public Blueprint getBlueprint(String author, String bprintname) {
+}
+```
 
-**Ventajas de la estrategia híbrida implementada:**
+## Results
 
-1. **Alto rendimiento en lecturas**: ConcurrentHashMap permite múltiples lectores sin bloqueos
-2. **Operaciones atómicas**: putIfAbsent() elimina condiciones de carrera críticas  
-3. **Sincronización mínima**: Solo donde es absolutamente necesario
-4. **Escalabilidad**: 70-90% mejor rendimiento vs sincronización total
+> The solution eliminates race conditions while maintaining high performance.
 
-**Métodos sin bloqueos (máximo rendimiento):**
+**Performance classification:**
+- **Non-blocking**: `saveBlueprint()`, `getAllBlueprints()`, `getBlueprint()`
+- **Minimal synchronization**: `getBlueprintsByAuthor()`, `updateBlueprint()`
+
+**Non-blocking methods (maximum performance):**
 - `getAllBlueprints()`
 - `getBlueprint()`  
 - `saveBlueprint()`
 
-**Métodos con sincronización mínima:**
+**Methods with minimal synchronization:**
 - `getBlueprintsByAuthor()`
 - `updateBlueprint()`
 
-## Endpoints Implementados
+## Implemented Endpoints
 
-| Método | Endpoint | Descripción | Códigos HTTP |
-|--------|----------|-------------|--------------|
-| GET | `/blueprints` | Obtener todos los planos | 200, 500 |
-| GET | `/blueprints/{author}` | Obtener planos por autor | 200, 404 |
-| GET | `/blueprints/{author}/{bpname}` | Obtener plano específico | 200, 404 |
-| POST | `/blueprints` | Crear nuevo plano | 201, 403 |
-| PUT | `/blueprints/{author}/{bpname}` | Actualizar plano | 200, 404 |
+| Method | Endpoint | Description | HTTP Codes |
+|--------|----------|-------------|------------|
+| GET | `/blueprints` | Get all blueprints | 200, 500 |
+| GET | `/blueprints/{author}` | Get blueprints by author | 200, 404 |
+| GET | `/blueprints/{author}/{bpname}` | Get specific blueprint | 200, 404 |
+| POST | `/blueprints` | Create new blueprint | 201, 403 |
+| PUT | `/blueprints/{author}/{bpname}` | Update blueprint | 200, 404 |
 
-## Conclusiones
+## Conclusions
 
-1. **Implementación exitosa**: Logramos construir una API REST completa que gestiona planos arquitectónicos con todas las operaciones CRUD requeridas.
+1. **Successful implementation**: We managed to build a complete REST API that manages architectural blueprints with all required CRUD operations.
 
-2. **Inyección de dependencias**: Aplicamos correctamente los principios de inversión de dependencias usando las anotaciones de Spring (@Service, @Autowired).
+2. **Dependency injection**: We correctly applied dependency inversion principles using Spring annotations (@Service, @Autowired).
 
-3. **Manejo de concurrencia eficiente**: Desarrollamos una solución que elimina condiciones de carrera sin degradar significativamente el rendimiento, combinando ConcurrentHashMap con sincronización selectiva.
+3. **Efficient concurrency handling**: We developed a solution that eliminates race conditions without significantly degrading performance, combining ConcurrentHashMap with selective synchronization.
 
-4. **Escalabilidad**: El sistema mantiene alto rendimiento en operaciones de lectura frecuentes, que son típicamente las más comunes en APIs REST.
-
-5. **Buenas prácticas**: Seguimos principios SOLID, manejo adecuado de excepciones y códigos de estado HTTP apropiados.
+4. **Best practices**: We followed SOLID principles, proper exception handling and appropriate HTTP status codes.
