@@ -42,7 +42,7 @@ public class BlueprintAPIController {
         try {
             //obtener datos que se enviarán a través del API
             Set<Blueprint> data = blueprintServices.getAllBlueprints();
-            return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(data, HttpStatus.OK);
         } catch (Exception ex) {
             Logger.getLogger(BlueprintAPIController.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>("Error, no se pudieron obtener los planos", HttpStatus.NOT_FOUND);
@@ -54,7 +54,7 @@ public class BlueprintAPIController {
         try {
             //obtener datos que se enviarán a través del API
             Set<Blueprint> data = blueprintServices.getBlueprintsByAuthor(author);
-            return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(data, HttpStatus.OK);
         } catch (BlueprintNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
@@ -66,7 +66,7 @@ public class BlueprintAPIController {
             //obtener datos que se enviarán a través del API
             Blueprint data = blueprintServices.getBlueprint(author, bpname);
 
-            return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(data, HttpStatus.OK);
         } catch (BlueprintNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
